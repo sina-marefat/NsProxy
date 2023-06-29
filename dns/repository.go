@@ -1,7 +1,6 @@
 package dns
 
 import (
-	"encoding/json"
 	"nsproxy/cache"
 	"time"
 )
@@ -11,24 +10,19 @@ type DNSRepository struct {
 	defaultTTL time.Duration
 }
 
-func (dr *DNSRepository) SetDNSInCache(domain string, IPs []string) error {
-	marshaledIps, err := json.Marshal(IPs)
-	if err != nil {
-		return err
-	}
-	return dr.cache.Set(domain, marshaledIps, dr.defaultTTL)
+func (dr *DNSRepository) SetDNSInCache(domain string, response []byte, count []byte) error {
+	return dr.cache.Set(domain, append(count, response...), dr.defaultTTL)
 }
 
-func (dr *DNSRepository) GetDNSFromCache(domain string) ([]string, error) {
+func (dr *DNSRepository) GetDNSFromCache(domain string) ([]byte, []byte, error) {
 	marshalledIps, err := dr.cache.Get(domain)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	var IPs []string
 
-	err = json.Unmarshal([]byte(marshalledIps.(string)), &IPs)
+	response := []byte(marshalledIps.(string))
 
-	return IPs, err
+	return response[2:], response[0:2], err
 }
 
 func NewDnsRepo(cache cache.Cache) *DNSRepository {

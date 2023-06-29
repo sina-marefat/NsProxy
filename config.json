@@ -3,7 +3,7 @@
     "external-dns-servers": [
         "8.8.8.8:53"
     ],
-    "redis-host":"proxy_redis",
+    "redis-host":"127.0.0.1",
     "redis-port":"6379",
     "server-host":"127.0.0.1",
     "server-port":"53"
