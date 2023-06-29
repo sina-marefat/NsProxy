@@ -7,6 +7,7 @@ package cmd
 import (
 	"log"
 	"nsproxy/config"
+	"nsproxy/dns"
 
 	"github.com/spf13/cobra"
 )
@@ -26,6 +27,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatal("error on initiation of config")
 		}
+		dns.StartServer(config.GetConfig().ServerHost, config.GetConfig().ServerPort)
 	},
 }
 
