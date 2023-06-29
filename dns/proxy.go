@@ -78,6 +78,7 @@ func (s *Server) requestHandler(data []byte, address *net.UDPAddr, proxySocket *
 		fmt.Printf("Cache hit on %s\n", pm.NsName)
 		resp := s.generateCachedResponse(data, nsResponse)
 		s.SendResponse(address, proxySocket, resp)
+		return
 		
 	}
 	
