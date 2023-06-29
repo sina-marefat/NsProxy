@@ -7,7 +7,11 @@ import (
 	"nsproxy/config"
 )
 
-func StartServer(host string, port string) error {
+type Server struct {
+	repo DNSRepository
+}
+
+func (s *Server) StartServer(host string, port string) error {
 	// Resolve the proxy IP and port
 	proxyAddr, err := net.ResolveUDPAddr("udp", host+":"+port)
 	if err != nil {
@@ -37,11 +41,11 @@ func StartServer(host string, port string) error {
 		log.Printf("Received DNS request from %s:%d", addr.IP, addr.Port)
 
 		// Handle the DNS request
-		go requestHandler(buffer[:n], addr, proxySocket)
+		go s.requestHandler(buffer[:n], addr, proxySocket)
 	}
 }
 
-func requestHandler(data []byte, address *net.UDPAddr, proxySocket *net.UDPConn) {
+func (s *Server) requestHandler(data []byte, address *net.UDPAddr, proxySocket *net.UDPConn) {
 	// Create a UDP socket and send the DNS request to the DNS server
 	// read from cache
 	// read add ip addresses
@@ -54,10 +58,10 @@ func requestHandler(data []byte, address *net.UDPAddr, proxySocket *net.UDPConn)
 	for i := 0; i < len(dnsServers); i++ {
 		dnsServerAddr, err = net.ResolveUDPAddr("udp", dnsServers[i])
 		if err != nil {
-			log.Println(fmt.Sprintf("Failed to resolve DNS server address with server %s:",dnsServers[i]), err)
+			log.Println(fmt.Sprintf("Failed to resolve DNS server address with server %s:", dnsServers[i]), err)
 			continue
 		}
-		break	
+		break
 	}
 
 	if dnsServerAddr == nil {
@@ -91,4 +95,8 @@ func requestHandler(data []byte, address *net.UDPAddr, proxySocket *net.UDPConn)
 		log.Println("Failed to send DNS response to client:", err)
 		return
 	}
+}
+
+func NewServer(repo DNSRepository) *Server {
+	return &Server{repo: repo}
 }

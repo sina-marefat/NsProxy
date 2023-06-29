@@ -8,6 +8,7 @@ import (
 	"log"
 	"nsproxy/config"
 	"nsproxy/dns"
+	"nsproxy/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -27,7 +28,17 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatal("error on initiation of config")
 		}
-		dns.StartServer(config.GetConfig().ServerHost, config.GetConfig().ServerPort)
+
+		err = utils.ConnectToRedis()
+		if err != nil {
+			log.Fatal("can not connect to redis")
+		}
+
+		server := dns.NewServer(
+			*dns.NewDnsRepo(utils.GetCache()),
+		)
+
+		server.StartServer(config.GetConfig().ServerHost, config.GetConfig().ServerPort)
 	},
 }
 
