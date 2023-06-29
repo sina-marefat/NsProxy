@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  nsproxy_server:
+    container_name: nsproxy_server
+    build: ./
+    ports:
+      - 53:53
+
+  proxy_redis:
+    container_name: proxy_redis
+    image: redis:5.0.5-alpine
+    restart: always
+    ports:
+      - 6379:6379

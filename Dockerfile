@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 
 FROM golang:1.18
 
@@ -11,8 +10,7 @@ RUN go mod download
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
-COPY *.go ./
-COPY config.json ./
+COPY . ./
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /ns-proxy
@@ -25,4 +23,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /ns-proxy
 EXPOSE 53
 
 # Run
-CMD ["/ns-proxy proxy"]
+CMD ["/ns-proxy","proxy"]
