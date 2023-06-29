@@ -13,6 +13,8 @@ type config struct {
 	ExternalDnsServers []string `json:"external-dns-servers"`
 	RedisHost          string   `json:"redis-host"`
 	RedisPort          string   `json:"redis-port"`
+	ServerHost         string   `json:"server-host"`
+	ServerPort         string   `json:"server-port"`
 }
 
 type Config struct {
@@ -20,6 +22,8 @@ type Config struct {
 	ExternalDnsServers []string
 	RedisHost          string
 	RedisPort          string
+	ServerHost         string
+	ServerPort         string
 }
 
 func GetConfig() Config {
@@ -54,6 +58,8 @@ func refineConfig(cfg config) (Config, error) {
 		ExternalDnsServers: cfg.ExternalDnsServers,
 		RedisHost:          cfg.RedisHost,
 		RedisPort:          cfg.RedisPort,
+		ServerHost:         cfg.ServerHost,
+		ServerPort:         cfg.ServerPort,
 	}
 
 	return refinedCfg, nil
