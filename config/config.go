@@ -11,11 +11,15 @@ var cfg Config
 type config struct {
 	CacheExpireTTL     string   `json:"cache-expiration-time"`
 	ExternalDnsServers []string `json:"external-dns-servers"`
+	RedisHost          string   `json:"redis-host"`
+	RedisPort          string   `json:"redis-port"`
 }
 
 type Config struct {
 	CacheExpireTTL     time.Duration
 	ExternalDnsServers []string
+	RedisHost          string
+	RedisPort          string
 }
 
 func GetConfig() Config {
@@ -48,6 +52,8 @@ func refineConfig(cfg config) (Config, error) {
 	refinedCfg = Config{
 		CacheExpireTTL:     ttl,
 		ExternalDnsServers: cfg.ExternalDnsServers,
+		RedisHost:          cfg.RedisHost,
+		RedisPort:          cfg.RedisPort,
 	}
 
 	return refinedCfg, nil
