@@ -25,8 +25,6 @@ const (
 type dnsMessage struct {
 	NsName      string
 	NsType      int
-	Answers     []byte
-	AnswerCount []byte
 }
 
 func parseRequest(message []byte) (dnsMessage, error) {
@@ -46,28 +44,6 @@ func parseRequest(message []byte) (dnsMessage, error) {
 	}
 
 	return parsedMessage, nil
-}
-
-func parseResponse(message []byte) (dnsMessage, error) {
-	reqMessage, err := parseRequest(message)
-	if err != nil {
-		return reqMessage, err
-	}
-
-	resp, count, err := getAnswers(message)
-
-	reqMessage.Answers = resp
-	reqMessage.AnswerCount = count
-
-	return reqMessage, err
-
-}
-
-func getAnswers(message []byte) ([]byte, []byte, error) {
-	if len(message) < 32 {
-		return nil, nil, errInvalidDNSResponse
-	}
-	return message[32:], message[6:8], nil
 }
 
 func getNsType(query []byte) (int, error) {

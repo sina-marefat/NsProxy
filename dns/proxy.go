@@ -57,51 +57,49 @@ func (s *Server) requestHandler(data []byte, address *net.UDPAddr, proxySocket *
 	var err error
 	pm, err := parseRequest(data)
 
-	print(pm.NsName)
-	print(pm.NsType)
-
 	if err != nil {
-		s.WriteErr(address, proxySocket, ErrBadRequest)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrBadRequest,pm.NsName))
 	}
 
 	if pm.NsType != AAAA && pm.NsType != A {
-		s.WriteErr(address, proxySocket, ErrUnspportedType)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrUnspportedType,pm.NsName))
 		return
 	}
 
-	nsResponse, count, err := s.repo.GetDNSFromCache(pm.NsName)
+	nsResponse, err := s.repo.GetDNSFromCache(pm.NsName)
 
 	if err != nil && err != redis.Nil {
-		s.WriteErr(address, proxySocket, ErrServerError)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrServerError,pm.NsName))
 		return
 	}
 
+	
 	if nsResponse != nil {
-		resp := s.generateCachedResponse(data, count, nsResponse)
+		fmt.Printf("Cache hit on %s\n", pm.NsName)
+		resp := s.generateCachedResponse(data, nsResponse)
 		s.SendResponse(address, proxySocket, resp)
-
+		
 	}
-
+	
+	fmt.Printf("Cache miss on %s\n", pm.NsName)
+	
 	response, err := s.GetFromDNSServer(data)
 	if err != nil {
-		s.WriteErr(address, proxySocket, ErrServerError)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrServerError,pm.NsName))
 		return
 	}
 
 	cpResponse := make([]byte, len(response))
 	copy(cpResponse, response)
 
-	parsedResponse, err := parseResponse(response)
 	if err != nil {
-		s.WriteErr(address, proxySocket, ErrServerError)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrServerError,pm.NsName))
 		return
 	}
 
-	fmt.Printf("%v", parsedResponse.Answers)
-
-	err = s.repo.SetDNSInCache(pm.NsName, parsedResponse.Answers, parsedResponse.AnswerCount)
+	err = s.repo.SetDNSInCache(pm.NsName, response)
 	if err != nil {
-		s.WriteErr(address, proxySocket, ErrServerError)
+		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrServerError,pm.NsName))
 		return
 	}
 	s.SendResponse(address, proxySocket, cpResponse)
@@ -109,7 +107,6 @@ func (s *Server) requestHandler(data []byte, address *net.UDPAddr, proxySocket *
 
 func (s *Server) SendResponse(address *net.UDPAddr, proxySocket *net.UDPConn, response []byte) {
 	// Send the DNS response back to the client
-	fmt.Printf("%v", response)
 	var err error
 	_, err = proxySocket.WriteToUDP(response, address)
 	if err != nil {
@@ -159,19 +156,11 @@ func (s *Server) GetFromDNSServer(data []byte) ([]byte, error) {
 	return response, nil
 }
 
-func (s *Server) WriteErr(address *net.UDPAddr, proxySocket *net.UDPConn, err error) {
-	s.SendResponse(address, proxySocket, []byte(err.Error()))
-}
-
-func (s *Server) generateCachedResponse(req []byte, count []byte, resp []byte) []byte {
-	fresp := append(req[0:32], resp...)
-	// update count
-	fresp[6] = count[0]
-	fresp[7] = count[1]
-	// update headers
-	fresp[2] = 129
-	fresp[3] = 128
-	return fresp
+func (s *Server) generateCachedResponse(req []byte, resp []byte) []byte {
+	// override tx ID
+	resp[0] = req[0]
+	resp[1] = req[1]
+	return resp
 }
 func NewServer(repo DNSRepository) *Server {
 	return &Server{repo: repo}

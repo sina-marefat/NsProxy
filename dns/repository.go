@@ -10,19 +10,19 @@ type DNSRepository struct {
 	defaultTTL time.Duration
 }
 
-func (dr *DNSRepository) SetDNSInCache(domain string, response []byte, count []byte) error {
-	return dr.cache.Set(domain, append(count, response...), dr.defaultTTL)
+func (dr *DNSRepository) SetDNSInCache(domain string, response []byte) error {
+	return dr.cache.Set(domain, response, dr.defaultTTL)
 }
 
-func (dr *DNSRepository) GetDNSFromCache(domain string) ([]byte, []byte, error) {
+func (dr *DNSRepository) GetDNSFromCache(domain string) ([]byte, error) {
 	marshalledIps, err := dr.cache.Get(domain)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	response := []byte(marshalledIps.(string))
 
-	return response[2:], response[0:2], err
+	return response, err
 }
 
 func NewDnsRepo(cache cache.Cache) *DNSRepository {
