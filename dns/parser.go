@@ -23,8 +23,8 @@ const (
 )
 
 type dnsMessage struct {
-	NsName      string
-	NsType      int
+	NsName string
+	NsType int
 }
 
 func parseRequest(message []byte) (dnsMessage, error) {
@@ -50,8 +50,16 @@ func getNsType(query []byte) (int, error) {
 	if len(query) < 25 {
 		return 0, errInvalidDNSRequest
 	}
+	pos := queryHeaderSize + 1
+	n, err := parseDNSName(query, queryHeaderSize)
+	if err != nil {
+		return 0, errInvalidDNSRequest
+	}
+	pos += len(n) + 1
 
-	return int(query[24]), nil
+	qType := int(query[pos])<<8 | int(query[pos+1])
+
+	return qType, nil
 }
 
 func parseDNSName(response []byte, startPos int) (string, error) {

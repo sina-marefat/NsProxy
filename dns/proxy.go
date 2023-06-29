@@ -62,6 +62,7 @@ func (s *Server) requestHandler(data []byte, address *net.UDPAddr, proxySocket *
 	}
 
 	if pm.NsType != AAAA && pm.NsType != A {
+		print(pm.NsType)
 		s.SendResponse(address, proxySocket, GenerateErrorResponse(data[0:2],ErrUnspportedType,pm.NsName))
 		return
 	}

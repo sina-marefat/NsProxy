@@ -26,14 +26,6 @@ func sampleResponse(id []byte, ns string) []byte {
 	// Question count (2 bytes)
 	binary.BigEndian.PutUint16(header[4:6], 1) // One question
 
-	// Answer count (2 bytes)
-	binary.BigEndian.PutUint16(header[6:8], 0) // No answers
-
-	// Authority count (2 bytes)
-	binary.BigEndian.PutUint16(header[8:10], 0) // No authority records
-
-	// Additional count (2 bytes)
-	binary.BigEndian.PutUint16(header[10:12], 0) // No additional records
 
 	// Question section
 	questionSection := make([]byte, 4+len(ns))
@@ -42,13 +34,6 @@ func sampleResponse(id []byte, ns string) []byte {
 	questionSection[0] = byte(len(ns))
 	copy(questionSection[1:], []byte(ns))
 
-	// Type (A record)
-	binary.BigEndian.PutUint16(questionSection[1+len(ns):], 1)
-
-	// Class (IN)
-	binary.BigEndian.PutUint16(questionSection[3+len(ns):], 1)
-
-	// Concatenate the header and question section
 	response := append(header, questionSection...)
 
 	return response
