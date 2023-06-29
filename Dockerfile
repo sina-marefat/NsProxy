@@ -25,4 +25,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /ns-proxy
 EXPOSE 53
 
 # Run
-CMD ["/ns-proxy"]
+CMD ["/ns-proxy proxy"]
