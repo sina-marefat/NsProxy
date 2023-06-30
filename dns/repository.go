@@ -2,6 +2,7 @@ package dns
 
 import (
 	"nsproxy/cache"
+	"nsproxy/config"
 	"time"
 )
 
@@ -26,5 +27,5 @@ func (dr *DNSRepository) GetDNSFromCache(domain string) ([]byte, error) {
 }
 
 func NewDnsRepo(cache cache.Cache) *DNSRepository {
-	return &DNSRepository{cache: cache}
+	return &DNSRepository{cache: cache,defaultTTL: config.GetConfig().CacheExpireTTL}
 }
