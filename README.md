@@ -84,10 +84,10 @@ For example:
 
 ## Configuration
 
-The config.json file will load the program's script settings,
+The `config.json` file will load the program's script settings,
 including cache-expiration, external-dns-server, server port, server host, redis port and redis host in json format when the program is run.
 
-- cache-expiration-time : The number of seconds to cache DNS responses.
-- external-dns-server : A list of external DNS server IPs to request and update in the cache
-- redis-port : redis up on the port 6379
-- server-port : UDP connnection on the port 53
+- `cache-expiration-time` : The number of seconds to cache DNS responses.
+- `external-dns-server` : A list of external DNS server IPs to request and update in the cache
+- `redis-port` : redis up on the port 6379
+- `server-port` : UDP connnection on the port 53
