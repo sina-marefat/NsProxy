@@ -7,7 +7,7 @@ WORKDIR /app
 # Download Go modules
 COPY go.mod go.sum ./
 RUN go mod download
-
+RUN apt-get update && apt-get install dnsutils -y
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
 COPY . ./
@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /ns-proxy
 # But we can document in the Dockerfile what ports
 # the application is going to listen on by default.
 # https://docs.docker.com/engine/reference/builder/#expose
-EXPOSE 53
+EXPOSE 53/udp
 
 # Run
 CMD ["/ns-proxy","proxy"]

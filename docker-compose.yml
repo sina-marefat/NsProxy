@@ -5,7 +5,7 @@ services:
     container_name: nsproxy_server
     build: ./
     ports:
-      - "53:53"
+      - "53:53/udp"
 
   proxy_redis:
     container_name: proxy_redis
