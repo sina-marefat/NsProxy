@@ -17,7 +17,7 @@ When a client device sends a DNS query to a DNS proxy, the proxy examines the re
 "As it is clear from the diagram, with the increase in the percentage of proxy use, the utilization time ratio decreases."
 
 > The traffic volume saved by this proxy, considering a daily count of 2000 user request, is maximum of
-> `(2000 * 0.5)* 100 /1024 = 97,65 KB`.
+> `(2000 * 0.5)* 100 /1024 = 97.65 KB`.
 
 
 
@@ -65,13 +65,13 @@ Open your favorite Terminal and run these commands.
 - **Third**: DNS Proxy server is listening on localhost `(127.0.0.1:53)`
 
 ```sh
-    go run main.go proxy
+ go run main.go proxy
 ```
 
 - **Forth**: Requesting the domain and getting the desired IP from the proxy server in cmd or anything.
 
 ```sh
-    nslookup `[Domain name]` 127.0.0.1
+ nslookup `[Domain name]` 127.0.0.1
 ```
 
 For example:
