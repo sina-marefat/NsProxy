@@ -1,12 +1,14 @@
-**_DNS Proxy_**
+# **DNS Proxy**
 
-# What is The DNSProxy?
+## What is The DNSProxy?
 
 A DNS proxy, also known as a DNS forwarder or a DNS resolver, is an intermediary server that sits between client devices and DNS servers. Its primary function is to handle DNS queries and forward them to appropriate DNS servers for resolution.
 
 When a client device sends a DNS query to a DNS proxy, the proxy examines the request and acts as a middleman between the client and the DNS server. The DNS proxy checks its cache to see if it already has the resolved IP address for the requested domain. If the information is available in its cache, the proxy can respond directly to the client without sending a query to an external DNS server. This caching mechanism helps to improve the response time and reduce the load on DNS servers.
 
-## Introduction
+
+
+## ***Introduction***
 
 "A UDP connection is established on port `53`. Whenever a request is made on this connection, the data is buffered, and then passed to the parser module. The parser module handles DNS requests, which are identified by a 12-byte header. Using this module, we separate the nameserver from the query, and check the query type (e.g., AAAA, A, etc.). If the query type is incorrect, a DNS error is returned. Otherwise, we check all the keys using the name server. If a key with the specified name server exists and is already cached, we retrieve it. Otherwise, a UDP connection is established with the DNS server. We send the request and receive the response, which is then stored in the UDP connection proxy to be displayed in the command line (cmd)."
 
@@ -17,14 +19,18 @@ When a client device sends a DNS query to a DNS proxy, the proxy examines the re
 > The traffic volume saved by this proxy, considering a daily count of 2000 user request, is maximum of
 > `(2000 * 0.5)* 100 /1024 = 97,65 KB`.
 
-## Requirment
+
+
+## ***Requirment***
 
 To run this project, you will need:
 
 - Golang
 - Redis
 
-## Installation
+
+
+## ***Installation***
 
 1. Using Docker
 
@@ -47,7 +53,8 @@ and then using binary
  ./nsproxy proxy
 ```
 
-## Development
+
+## ***Development***
 
 Open your favorite Terminal and run these commands.
 
@@ -75,7 +82,9 @@ For example:
 
 ![Ip Address](https://github.com/sina-marefat/NsProxy/blob/main/images/output.png)
 
-## Configuration
+
+
+## ***Configuration***
 
 The `config.json` file will load the program's script settings,
 including cache-expiration, external-dns-server, server port, server host, redis port and redis host in json format when the program is run.
